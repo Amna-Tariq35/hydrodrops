@@ -1,26 +1,20 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  --color-hydro: #059669;
+  --color-hydro-dark: #047857;
+  --color-hydro-light: #d1fae5;
+  
+  --color-drops: #0284c7;
+  --color-drops-dark: #0369a1;
+  --color-drops-light: #e0f2fe;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
+  /* Rich & Vibrant Water Gradient (Hydro Green to Drops Blue) */
+  background: linear-gradient(135deg, #047857 0%, #0284c7 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: #0f172a;
 }
