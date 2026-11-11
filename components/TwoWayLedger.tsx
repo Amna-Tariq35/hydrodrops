@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Plus, Truck, CheckCircle2, UserCheck } from 'lucide-react'
+import { Plus, Minus, Truck, CheckCircle2, UserCheck } from 'lucide-react'
 
 export default function TwoWayLedger({
   order,
@@ -16,16 +16,38 @@ export default function TwoWayLedger({
   userRole: 'admin' | 'customer'
 }) {
   const supabase = createClient()
-  const [bottlesCount, setBottlesCount] = useState<number>(1)
+  const [bottlesCount, setBottlesCount] = useState('1')
   const [notes, setNotes] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [entryError, setEntryError] = useState('')
 
   // Allow entry logging for both 'accepted' AND 'completed' orders
   const canAddEntry = order.status === 'accepted' || order.status === 'completed'
 
+  const getValidBottlesCount = () => {
+    const count = Number(bottlesCount)
+
+    if (!Number.isInteger(count) || count < 1 || count > 50) {
+      setEntryError('Enter a whole number between 1 and 50.')
+      return null
+    }
+
+    setEntryError('')
+    return count
+  }
+
+  const adjustBottlesCount = (change: number) => {
+    const currentCount = Number(bottlesCount)
+    const nextCount = Number.isInteger(currentCount) ? currentCount + change : 1
+
+    setBottlesCount(String(Math.min(50, Math.max(1, nextCount))))
+    setEntryError('')
+  }
+
   const handleAdminAddEntry = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (bottlesCount <= 0) return
+    const count = getValidBottlesCount()
+    if (count === null) return
     setLoading(true)
 
     const { data: { user } } = await supabase.auth.getUser()
@@ -39,7 +61,7 @@ export default function TwoWayLedger({
     // Matching exact database schema: 'note' & 'created_by'
     const { error } = await supabase.from('delivery_entries').insert({
       order_id: order.id,
-      bottles: bottlesCount,
+      bottles: count,
       note: notes || null,
       created_by: user.id,
     })
@@ -54,7 +76,8 @@ export default function TwoWayLedger({
 
   const handleCustomerAddEntry = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (bottlesCount <= 0) return
+    const count = getValidBottlesCount()
+    if (count === null) return
     setLoading(true)
 
     const { data: { user } } = await supabase.auth.getUser()
@@ -67,7 +90,7 @@ export default function TwoWayLedger({
 
     const { error } = await supabase.from('customer_entries').insert({
       order_id: order.id,
-      bottles: bottlesCount,
+      bottles: count,
       note: notes || null,
       created_by: user.id,
     })
@@ -101,19 +124,49 @@ export default function TwoWayLedger({
 
           <form
             onSubmit={userRole === 'admin' ? handleAdminAddEntry : handleCustomerAddEntry}
+            noValidate
             className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
           >
             <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-gray-200">
-              <label className="text-xs font-bold text-gray-500 whitespace-nowrap">Bottles Count:</label>
-              <input
-                type="number"
-                min="1"
-                max="50"
-                value={bottlesCount}
-                onChange={(e) => setBottlesCount(parseInt(e.target.value) || 1)}
-                className="w-16 text-center font-extrabold text-sm text-gray-800 outline-none"
-                required
-              />
+              <label htmlFor="bottles-count" className="text-xs font-bold text-gray-500 whitespace-nowrap">
+                Bottles Count:
+              </label>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  aria-label="Decrease bottle count"
+                  onClick={() => adjustBottlesCount(-1)}
+                  disabled={bottlesCount !== '' && Number(bottlesCount) <= 1}
+                  className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <Minus className="w-4 h-4" />
+                </button>
+                <input
+                  id="bottles-count"
+                  type="number"
+                  min="1"
+                  max="50"
+                  step="1"
+                  value={bottlesCount}
+                  onChange={(e) => {
+                    setBottlesCount(e.target.value)
+                    setEntryError('')
+                  }}
+                  aria-invalid={Boolean(entryError)}
+                  aria-describedby={entryError ? 'bottle-count-error' : undefined}
+                  className="w-12 text-center font-extrabold text-sm text-gray-800 outline-none"
+                  required
+                />
+                <button
+                  type="button"
+                  aria-label="Increase bottle count"
+                  onClick={() => adjustBottlesCount(1)}
+                  disabled={bottlesCount !== '' && Number(bottlesCount) >= 50}
+                  className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             <input
@@ -133,6 +186,11 @@ export default function TwoWayLedger({
               {loading ? 'Saving...' : 'Add Ledger Entry'}
             </button>
           </form>
+          {entryError && (
+            <p id="bottle-count-error" role="alert" className="mt-2 text-xs text-red-600">
+              {entryError}
+            </p>
+          )}
         </div>
       )}
 
