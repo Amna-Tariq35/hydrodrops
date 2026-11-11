@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import { createClient } from '@/lib/supabase/server'
 import { Droplet, CheckCircle, ArrowRight, Sparkles } from 'lucide-react'
@@ -70,7 +71,21 @@ async function DealsList() {
   )
 }
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (user) {
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    if (error) throw error
+    if (profile?.role === 'admin') redirect('/admin')
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <Navbar />
@@ -96,7 +111,7 @@ export default function LandingPage() {
 
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/signup"
+              href={user ? '/orders/new' : '/signup'}
               className="w-full sm:w-auto px-8 py-3.5 text-base font-bold text-white bg-gradient-to-r from-hydro to-drops rounded-2xl shadow-lg hover:shadow-xl hover:opacity-90 transition flex items-center justify-center gap-2"
             >
               Order Water Now <ArrowRight className="w-5 h-5" />

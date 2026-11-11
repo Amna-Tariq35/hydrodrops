@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import TwoWayLedger from '@/components/TwoWayLedger'
 import { createClient } from '@/lib/supabase/client'
 import { PlusCircle, ShoppingBag, Droplet, ArrowRight, History } from 'lucide-react'
 
 export default function CustomerDashboardPage() {
+  const router = useRouter()
   const supabase = createClient()
   const [profile, setProfile] = useState<any>(null)
   const [allOrders, setAllOrders] = useState<any[]>([])
@@ -34,6 +36,11 @@ export default function CustomerDashboardPage() {
           .eq('id', user.id)
           .single()
 
+        if (prof?.role === 'admin') {
+          router.replace('/admin')
+          return
+        }
+
         setProfile(prof || { id: user.id, email: user.email, role: 'customer' })
 
         // Fetch ALL orders placed by this customer (Recent first)
@@ -56,7 +63,7 @@ export default function CustomerDashboardPage() {
     }
 
     fetchDashboardData()
-  }, [])
+  }, [router])
 
   const fetchEntriesForOrder = async (orderId: string) => {
     const { data: adminLogs } = await supabase

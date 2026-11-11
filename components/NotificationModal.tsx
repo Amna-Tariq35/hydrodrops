@@ -107,8 +107,8 @@ export default function NotificationModal({ userId, role }: { userId: string; ro
         </button>
 
         {/* Bell Click Dropdown Menu */}
-        {isOpen && (
-          <div className="absolute right-0 mt-3 w-[calc(100vw-2rem)] max-w-sm sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        {isOpen && mounted && createPortal(
+          <div className="fixed top-20 inset-x-4 mx-auto w-auto max-w-sm sm:right-6 sm:left-auto sm:mx-0 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 z-[9998] overflow-hidden animate-in fade-in zoom-in-95 duration-150">
             <div className="p-4 bg-slate-50 border-b border-gray-100 flex justify-between items-center">
               <h3 className="font-extrabold text-xs text-gray-800 uppercase tracking-wider">
                 Notifications
@@ -154,7 +154,8 @@ export default function NotificationModal({ userId, role }: { userId: string; ro
                 <div className="p-8 text-center text-xs text-gray-400">No notifications.</div>
               )}
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </div>
 
