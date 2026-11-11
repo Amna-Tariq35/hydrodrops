@@ -1,20 +1,25 @@
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
+  // Default response jo hamesha page load karega
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
   })
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  // Prevent Edge Middleware crash if env values are loading
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return supabaseResponse
-  }
-
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    // Agar Vercel par variables load nahi hue, toh silently ignore karein aur app chalne dein
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.warn('Supabase env variables missing in middleware')
+      return response
+    }
+
     const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       cookies: {
         getAll() {
@@ -22,22 +27,25 @@ export async function middleware(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({
+          response = NextResponse.next({
             request,
           })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            response.cookies.set(name, value, options)
           )
         },
       },
     })
 
-    await supabase.auth.getUser()
-  } catch (err) {
-    console.error('Middleware Auth Error:', err)
-  }
+    // Session check karein (getUser se halka aur fast function hai)
+    await supabase.auth.getSession()
 
-  return supabaseResponse
+    return response
+  } catch (error) {
+    // Agar koi bhi error aaye toh Vercel ko crash (500) karne se rokein
+    console.error('Middleware safely caught an error:', error)
+    return NextResponse.next()
+  }
 }
 
 export const config = {
