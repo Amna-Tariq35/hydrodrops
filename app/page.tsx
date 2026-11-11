@@ -26,19 +26,19 @@ async function DealsList() {
       {deals.map((deal) => (
         <div
           key={deal.id}
-          className="bg-white rounded-3xl p-8 border border-gray-100 shadow-xl hover:shadow-2xl transition flex flex-col justify-between relative overflow-hidden group"
+          className="bg-white rounded-3xl p-5 sm:p-8 border border-gray-100 shadow-xl hover:shadow-2xl transition flex flex-col justify-between relative overflow-hidden group"
         >
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-hydro to-drops" />
           <div>
-            <div className="flex justify-between items-start mb-4">
+            <div className="flex flex-wrap justify-between items-start gap-2 mb-4">
               <h3 className="text-xl font-bold text-gray-800">{deal.name}</h3>
-              <span className="px-3 py-1 bg-hydro-light text-hydro text-xs font-bold rounded-full">
+              <span className="px-3 py-1 bg-hydro-light text-hydro text-xs font-bold rounded-full shrink-0">
                 Coupon Deal
               </span>
             </div>
 
-            <div className="flex items-baseline gap-1 mb-6">
-              <span className="text-4xl font-extrabold text-gray-900">Rs. {deal.price}</span>
+            <div className="flex flex-wrap items-baseline gap-1 mb-6">
+              <span className="text-3xl sm:text-4xl font-extrabold text-gray-900">Rs. {deal.price}</span>
               <span className="text-gray-500 text-sm">/ {deal.bottles} Bottles</span>
             </div>
 

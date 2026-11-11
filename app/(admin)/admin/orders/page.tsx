@@ -98,12 +98,12 @@ function OrdersTabContent() {
       </div>
 
       {/* Orders List Table */}
-      <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+      <div className="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-gray-100">
         {loading ? (
           <div className="text-center py-12 text-xs text-gray-400">Loading orders...</div>
         ) : filteredOrders.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
+            <table className="w-full min-w-[800px] text-left text-sm">
               <thead>
                 <tr className="border-b border-gray-100 text-xs text-gray-400 uppercase">
                   <th className="pb-3 font-semibold">Order #</th>

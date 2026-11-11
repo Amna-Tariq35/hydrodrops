@@ -99,7 +99,7 @@ export default function AdminDashboardPage() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Shield className="w-6 h-6 text-hydro" />
-              <h1 className="text-2xl font-extrabold text-gray-900">Admin Control Center</h1>
+              <h1 className="text-xl sm:text-2xl font-extrabold text-gray-900">Admin Control Center</h1>
             </div>
             <p className="text-xs text-gray-500">Manage orders, walk-in entries, deals, and team access</p>
           </div>
@@ -204,9 +204,9 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Pending Orders Table / Action List */}
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+        <div className="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-gray-100">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
               <Clock className="w-5 h-5 text-amber-500" /> Action Needed: New Pending Orders
             </h2>
             <Link href="/admin/orders?tab=pending" className="text-xs font-semibold text-hydro hover:underline flex items-center gap-1">
@@ -216,7 +216,7 @@ export default function AdminDashboardPage() {
 
           {pendingOrders.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
+              <table className="w-full min-w-[720px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-gray-100 text-xs text-gray-400 uppercase">
                     <th className="pb-3 font-semibold">Order #</th>

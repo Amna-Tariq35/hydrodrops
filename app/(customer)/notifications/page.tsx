@@ -54,7 +54,7 @@ export default function NotificationsPage() {
       <Navbar />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-extrabold text-gray-900 flex items-center gap-2">
               <Bell className="w-6 h-6 text-hydro" /> Notification History
@@ -72,7 +72,7 @@ export default function NotificationsPage() {
           )}
         </div>
 
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-gray-100">
           {loading ? (
             <div className="text-center py-12 text-xs text-gray-400">Loading notifications...</div>
           ) : notifications.length > 0 ? (

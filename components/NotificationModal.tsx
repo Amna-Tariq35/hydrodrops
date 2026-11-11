@@ -108,7 +108,7 @@ export default function NotificationModal({ userId, role }: { userId: string; ro
 
         {/* Bell Click Dropdown Menu */}
         {isOpen && (
-          <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+          <div className="absolute right-0 mt-3 w-[calc(100vw-2rem)] max-w-sm sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
             <div className="p-4 bg-slate-50 border-b border-gray-100 flex justify-between items-center">
               <h3 className="font-extrabold text-xs text-gray-800 uppercase tracking-wider">
                 Notifications
@@ -162,7 +162,7 @@ export default function NotificationModal({ userId, role }: { userId: string; ro
       {mounted &&
         activeToast &&
         createPortal(
-          <div className="fixed bottom-6 right-6 z-[9999] bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white rounded-3xl p-5 shadow-[0_20px_50px_rgba(16,185,129,0.3)] border border-emerald-500/30 max-w-sm w-full backdrop-blur-xl animate-in slide-in-from-bottom-6 duration-300">
+          <div className="fixed inset-x-4 bottom-4 sm:inset-x-auto sm:bottom-6 sm:right-6 z-[9999] bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white rounded-3xl p-5 shadow-[0_20px_50px_rgba(16,185,129,0.3)] border border-emerald-500/30 max-w-sm w-auto sm:w-full backdrop-blur-xl animate-in slide-in-from-bottom-6 duration-300">
             <div className="flex justify-between items-start mb-3">
               <div className="flex items-center gap-2.5">
                 <div className="relative">

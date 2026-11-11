@@ -40,20 +40,20 @@ function NavbarContent() {
 
   return (
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-emerald-100 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 min-h-16 py-2 flex items-center justify-between gap-1 sm:gap-2">
         
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="p-2 bg-gradient-to-br from-hydro to-drops rounded-xl text-white shadow-md group-hover:scale-105 transition">
+        <Link href="/" className="flex shrink-0 items-center gap-2 group">
+          <div className="p-1.5 sm:p-2 bg-gradient-to-br from-hydro to-drops rounded-xl text-white shadow-md group-hover:scale-105 transition">
             <Droplet className="w-5 h-5 fill-white" />
           </div>
-          <span className="text-xl font-extrabold bg-gradient-to-r from-hydro to-drops bg-clip-text text-transparent">
+          <span className="text-base sm:text-xl font-extrabold bg-gradient-to-r from-hydro to-drops bg-clip-text text-transparent">
             Hydrodrops
           </span>
         </Link>
 
         {/* Navigation Links & Notification Bell */}
-        <nav className="flex items-center gap-3">
+        <nav className="flex shrink-0 items-center gap-1 sm:gap-3">
           {!mounted ? (
             <div className="h-8 w-24 bg-gray-100/50 rounded-xl animate-pulse" />
           ) : user ? (
@@ -64,47 +64,54 @@ function NavbarContent() {
               {profile?.role === 'admin' ? (
                 <Link
                   href="/admin"
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                  aria-label="Admin Center"
+                  className={`px-2 sm:px-3 py-2 sm:py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                     pathname?.startsWith('/admin')
                       ? 'bg-hydro text-white shadow-sm'
                       : 'text-gray-700 hover:bg-emerald-50 hover:text-hydro'
                   }`}
                 >
-                  <Shield className="w-4 h-4" /> Admin Center
+                  <Shield className="w-4 h-4 shrink-0" />
+                  <span className="hidden sm:inline">Admin Center</span>
                 </Link>
               ) : (
                 <Link
                   href="/dashboard"
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                  aria-label="Dashboard"
+                  className={`px-2 sm:px-3 py-2 sm:py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                     pathname === '/dashboard'
                       ? 'bg-gradient-to-r from-hydro to-drops text-white shadow-sm'
                       : 'text-gray-700 hover:bg-sky-50 hover:text-drops'
                   }`}
                 >
-                  <LayoutDashboard className="w-4 h-4" /> Dashboard
+                  <LayoutDashboard className="w-4 h-4 shrink-0" />
+                  <span className="hidden sm:inline">Dashboard</span>
                 </Link>
               )}
 
               <button
                 onClick={handleLogout}
-                className="px-3 py-1.5 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition flex items-center gap-1"
+                aria-label="Log out"
+                className="px-2 sm:px-3 py-2 sm:py-1.5 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition flex items-center gap-1"
               >
-                <LogOut className="w-4 h-4" /> Logout
+                <LogOut className="w-4 h-4 shrink-0" />
+                <span className="hidden sm:inline">Logout</span>
               </button>
             </>
           ) : (
             <>
               <Link
                 href="/login"
-                className="px-4 py-2 text-xs font-bold text-gray-700 hover:text-hydro transition"
+                className="px-2 sm:px-4 py-2 text-xs font-bold text-gray-700 hover:text-hydro transition"
               >
                 Sign In
               </Link>
               <Link
                 href="/signup"
-                className="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-hydro to-drops rounded-xl shadow hover:opacity-90 transition"
+                className="px-2 sm:px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-hydro to-drops rounded-xl shadow hover:opacity-90 transition"
               >
-                Get Started
+                <span className="sm:hidden">Sign Up</span>
+                <span className="hidden sm:inline">Get Started</span>
               </Link>
             </>
           )}
@@ -119,12 +126,12 @@ export default function Navbar() {
     <Suspense
       fallback={
         <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-emerald-100 shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 min-h-16 py-2 flex items-center justify-between gap-1 sm:gap-2">
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-gradient-to-br from-hydro to-drops rounded-xl text-white">
+              <div className="p-1.5 sm:p-2 bg-gradient-to-br from-hydro to-drops rounded-xl text-white">
                 <Droplet className="w-5 h-5 fill-white" />
               </div>
-              <span className="text-xl font-extrabold bg-gradient-to-r from-hydro to-drops bg-clip-text text-transparent">
+              <span className="text-base sm:text-xl font-extrabold bg-gradient-to-r from-hydro to-drops bg-clip-text text-transparent">
                 Hydrodrops
               </span>
             </div>

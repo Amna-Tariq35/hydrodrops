@@ -21,7 +21,7 @@ export default function DealCard({ deal, onSelect, isSelected }: DealCardProps) 
   return (
     <div
       onClick={() => onSelect && onSelect(deal.id)}
-      className={`bg-white rounded-3xl p-6 border transition flex flex-col justify-between relative overflow-hidden shadow-lg hover:shadow-xl ${
+      className={`bg-white rounded-3xl p-5 sm:p-6 border transition flex flex-col justify-between relative overflow-hidden shadow-lg hover:shadow-xl ${
         onSelect ? 'cursor-pointer' : ''
       } ${
         isSelected
@@ -32,15 +32,15 @@ export default function DealCard({ deal, onSelect, isSelected }: DealCardProps) 
       <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-hydro to-drops" />
 
       <div>
-        <div className="flex justify-between items-start mb-4">
+        <div className="flex flex-wrap justify-between items-start gap-2 mb-4">
           <h3 className="text-xl font-bold text-gray-800">{deal.name}</h3>
           <span className="px-3 py-1 bg-hydro-light text-hydro text-xs font-bold rounded-full flex items-center gap-1">
             <Droplet className="w-3.5 h-3.5 fill-hydro" /> Coupon Deal
           </span>
         </div>
 
-        <div className="flex items-baseline gap-1 mb-6">
-          <span className="text-4xl font-extrabold text-gray-900">Rs. {deal.price}</span>
+        <div className="flex flex-wrap items-baseline gap-1 mb-6">
+          <span className="text-3xl sm:text-4xl font-extrabold text-gray-900">Rs. {deal.price}</span>
           <span className="text-gray-500 text-sm">/ {deal.bottles} Bottles</span>
         </div>
 

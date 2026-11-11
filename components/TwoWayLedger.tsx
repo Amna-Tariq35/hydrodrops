@@ -139,8 +139,8 @@ export default function TwoWayLedger({
       {/* Side-by-Side Ledger Tables */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Admin Delivery Log Column */}
-        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-          <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
+        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 pb-3 border-b border-gray-100">
             <div className="flex items-center gap-2">
               <Truck className="w-4 h-4 text-hydro" />
               <h4 className="font-bold text-sm text-gray-800">Admin Dispatch Log</h4>
@@ -157,7 +157,7 @@ export default function TwoWayLedger({
                   key={entry.id}
                   className="flex justify-between items-center p-3 bg-slate-50 rounded-xl text-xs border border-gray-100"
                 >
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <span className="font-bold text-gray-800">Entry #{entry.entry_no}</span>
                     <p className="text-gray-400 text-[10px]">
                       {new Date(entry.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} •{' '}
@@ -167,7 +167,7 @@ export default function TwoWayLedger({
                       <p className="text-gray-500 text-[11px] mt-0.5">{entry.note || entry.notes}</p>
                     )}
                   </div>
-                  <span className="font-extrabold text-sm text-hydro bg-emerald-100/60 px-2.5 py-1 rounded-lg">
+                  <span className="shrink-0 font-extrabold text-sm text-hydro bg-emerald-100/60 px-2.5 py-1 rounded-lg">
                     +{entry.bottles} Bottles
                   </span>
                 </div>
@@ -179,8 +179,8 @@ export default function TwoWayLedger({
         </div>
 
         {/* Customer Receipt Log Column */}
-        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-          <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
+        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-100 shadow-sm">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 pb-3 border-b border-gray-100">
             <div className="flex items-center gap-2">
               <UserCheck className="w-4 h-4 text-drops" />
               <h4 className="font-bold text-sm text-gray-800">Customer Personal Log</h4>
@@ -197,7 +197,7 @@ export default function TwoWayLedger({
                   key={entry.id}
                   className="flex justify-between items-center p-3 bg-slate-50 rounded-xl text-xs border border-gray-100"
                 >
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <span className="font-bold text-gray-800">Log #{entry.entry_no}</span>
                     <p className="text-gray-400 text-[10px]">
                       {new Date(entry.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} •{' '}
@@ -207,7 +207,7 @@ export default function TwoWayLedger({
                       <p className="text-gray-500 text-[11px] mt-0.5">{entry.note || entry.notes}</p>
                     )}
                   </div>
-                  <span className="font-extrabold text-sm text-drops bg-sky-100/60 px-2.5 py-1 rounded-lg">
+                  <span className="shrink-0 font-extrabold text-sm text-drops bg-sky-100/60 px-2.5 py-1 rounded-lg">
                     +{entry.bottles} Received
                   </span>
                 </div>

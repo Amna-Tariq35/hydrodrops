@@ -95,7 +95,7 @@ export default function AdminCustomerDetailPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 text-right">
+            <div className="flex items-center gap-4 text-left sm:text-right">
               <div>
                 <span className="text-xs text-gray-400 uppercase font-semibold block">Total Orders</span>
                 <span className="text-xl font-bold text-gray-800">{orders.length}</span>
@@ -124,14 +124,14 @@ export default function AdminCustomerDetailPage() {
         </div>
 
         {/* Customer Orders Table */}
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-gray-100">
           <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
             <ShoppingBag className="w-5 h-5 text-hydro" /> Customer Order History
           </h2>
 
           {orders.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
+              <table className="w-full min-w-[760px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-gray-100 text-xs text-gray-400 uppercase">
                     <th className="pb-3 font-semibold">Order #</th>

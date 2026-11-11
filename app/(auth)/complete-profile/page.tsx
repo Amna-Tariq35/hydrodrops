@@ -76,7 +76,7 @@ export default function CompleteProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-hydro-light/50 via-white to-drops-light/50 flex items-center justify-center p-4">
-      <div className="bg-white/90 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-gray-100 max-w-md w-full">
+      <div className="bg-white/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-xl border border-gray-100 max-w-md w-full">
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-hydro to-drops text-white mb-3 shadow-md">
             <Droplet className="w-8 h-8 fill-white" />
