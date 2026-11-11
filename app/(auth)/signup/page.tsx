@@ -39,7 +39,7 @@ export default function SignupPage() {
     }
 
     if (data.user) {
-      await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .update({
           full_name: fullName,
@@ -48,8 +48,16 @@ export default function SignupPage() {
           profile_completed: true,
         })
         .eq('id', data.user.id)
+        .select('role')
+        .maybeSingle()
 
-      router.push('/dashboard')
+      if (profileError) {
+        setErrorMsg(profileError.message)
+        setLoading(false)
+        return
+      }
+
+      router.replace(profile?.role === 'admin' ? '/admin' : '/dashboard')
     }
   }
 

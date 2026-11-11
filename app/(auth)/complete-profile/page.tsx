@@ -55,7 +55,7 @@ export default function CompleteProfilePage() {
       return
     }
 
-    const { error } = await supabase
+    const { data: updatedProfile, error } = await supabase
       .from('profiles')
       .update({
         full_name: fullName,
@@ -65,12 +65,14 @@ export default function CompleteProfilePage() {
         profile_completed: true,
       })
       .eq('id', user.id)
+      .select('role')
+      .single()
 
     if (error) {
       setErrorMsg(error.message)
       setLoading(false)
     } else {
-      router.push('/dashboard')
+      router.replace(updatedProfile.role === 'admin' ? '/admin' : '/dashboard')
     }
   }
 

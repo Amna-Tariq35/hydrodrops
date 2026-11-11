@@ -2,13 +2,14 @@
 
 import { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Droplet, LogOut, Shield, LayoutDashboard } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import NotificationModal from '@/components/NotificationModal'
 
 function NavbarContent() {
   const pathname = usePathname()
+  const router = useRouter()
   const supabase = createClient()
   const [user, setUser] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
@@ -28,10 +29,14 @@ function NavbarContent() {
           .maybeSingle()
 
         setProfile(prof || { id: currentUser.id, role: 'customer' })
+
+        if (prof?.role === 'admin' && ['/', '/login', '/signup'].includes(pathname || '')) {
+          router.replace('/admin')
+        }
       }
     }
     getUserData()
-  }, [])
+  }, [pathname, router])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()

@@ -30,19 +30,25 @@ export default function LoginPage() {
       return
     }
 
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('role, profile_completed')
       .eq('id', data.user.id)
       .single()
 
-    if (profile && !profile.profile_completed) {
-      router.push('/complete-profile')
-    } else if (profile?.role === 'admin') {
-      router.push('/admin')
-    } else {
-      router.push('/dashboard')
+    if (profileError) {
+      setErrorMsg(profileError.message)
+      setLoading(false)
+      return
     }
+
+    const destination = !profile.profile_completed
+      ? '/complete-profile'
+      : profile.role === 'admin'
+        ? '/admin'
+        : '/dashboard'
+
+    router.replace(destination)
   }
 
   const handleGoogleLogin = async () => {
