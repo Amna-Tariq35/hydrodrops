@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 
@@ -9,6 +9,11 @@ export const metadata: Metadata = {
   description: 'Order water coupon packages and track your bottle deliveries transparently.',
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -16,9 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} bg-slate-50 text-slate-800 antialiased`}>
+      <body className={`${inter.className} antialiased min-h-screen overflow-x-hidden`}>
         {children}
       </body>
-    </html>
+    </html >
   )
 }
