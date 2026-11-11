@@ -1,22 +1,26 @@
 'use client'
 
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import { createClient } from '@/lib/supabase/client'
 import { ArrowLeft, Phone, MapPin, Mail, Calendar, ShoppingBag } from 'lucide-react'
 
-export default function AdminCustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params)
+export default function AdminCustomerDetailPage() {
+  const params = useParams()
   const router = useRouter()
   const supabase = createClient()
+
+  const id = params?.id as string
 
   const [customer, setCustomer] = useState<any>(null)
   const [orders, setOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!id) return
+
     const fetchCustomerDetails = async () => {
       setLoading(true)
 
@@ -42,7 +46,7 @@ export default function AdminCustomerDetailPage({ params }: { params: Promise<{ 
     }
 
     fetchCustomerDetails()
-  }, [id])
+  }, [id, supabase])
 
   if (loading) {
     return (
