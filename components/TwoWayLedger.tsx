@@ -23,12 +23,63 @@ export default function TwoWayLedger({
 
   // Allow entry logging for both 'accepted' AND 'completed' orders
   const canAddEntry = order.status === 'accepted' || order.status === 'completed'
+  const orderBottleLimit = Number(order.deal_bottles)
+  const hasValidOrderLimit = Number.isInteger(orderBottleLimit) && orderBottleLimit > 0
+  const totalAdminDelivered = adminEntries.reduce(
+    (sum, item) => sum + (Number(item.bottles) || 0),
+    0
+  )
+  const totalCustomerReceived = customerEntries.reduce(
+    (sum, item) => sum + (Number(item.bottles) || 0),
+    0
+  )
+  const currentLedgerTotal =
+    userRole === 'admin' ? totalAdminDelivered : totalCustomerReceived
+  const remainingBottles = hasValidOrderLimit
+    ? Math.max(0, orderBottleLimit - currentLedgerTotal)
+    : 0
 
-  const getValidBottlesCount = () => {
+  const getValidBottlesCount = async () => {
     const count = Number(bottlesCount)
 
-    if (!Number.isInteger(count) || count < 1 || count > 50) {
-      setEntryError('Enter a whole number between 1 and 50.')
+    if (!hasValidOrderLimit) {
+      setEntryError('The bottle limit for this order is unavailable.')
+      return null
+    }
+
+    if (remainingBottles < 1) {
+      setEntryError('This ledger has reached the bottle limit for this order.')
+      return null
+    }
+
+    if (!Number.isInteger(count) || count < 1 || count > remainingBottles) {
+      setEntryError(`Enter a whole number between 1 and ${remainingBottles}.`)
+      return null
+    }
+
+    const table = userRole === 'admin' ? 'delivery_entries' : 'customer_entries'
+    const { data: entries, error } = await supabase
+      .from(table)
+      .select('bottles')
+      .eq('order_id', order.id)
+
+    if (error) {
+      setEntryError(`Could not verify the latest ledger total: ${error.message}`)
+      return null
+    }
+
+    const latestLedgerTotal = (entries || []).reduce(
+      (sum, item) => sum + (Number(item.bottles) || 0),
+      0
+    )
+    const latestRemainingBottles = Math.max(0, orderBottleLimit - latestLedgerTotal)
+
+    if (count > latestRemainingBottles) {
+      setEntryError(
+        latestRemainingBottles > 0
+          ? `Only ${latestRemainingBottles} bottles remain in this ledger.`
+          : 'This ledger has reached the bottle limit for this order.'
+      )
       return null
     }
 
@@ -37,18 +88,23 @@ export default function TwoWayLedger({
   }
 
   const adjustBottlesCount = (change: number) => {
+    if (remainingBottles < 1) return
+
     const currentCount = Number(bottlesCount)
     const nextCount = Number.isInteger(currentCount) ? currentCount + change : 1
 
-    setBottlesCount(String(Math.min(50, Math.max(1, nextCount))))
+    setBottlesCount(String(Math.min(remainingBottles, Math.max(1, nextCount))))
     setEntryError('')
   }
 
   const handleAdminAddEntry = async (e: React.FormEvent) => {
     e.preventDefault()
-    const count = getValidBottlesCount()
-    if (count === null) return
     setLoading(true)
+    const count = await getValidBottlesCount()
+    if (count === null) {
+      setLoading(false)
+      return
+    }
 
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -76,9 +132,12 @@ export default function TwoWayLedger({
 
   const handleCustomerAddEntry = async (e: React.FormEvent) => {
     e.preventDefault()
-    const count = getValidBottlesCount()
-    if (count === null) return
     setLoading(true)
+    const count = await getValidBottlesCount()
+    if (count === null) {
+      setLoading(false)
+      return
+    }
 
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -103,15 +162,6 @@ export default function TwoWayLedger({
     setLoading(false)
   }
 
-  const totalAdminDelivered = adminEntries.reduce(
-    (sum, item) => sum + (item.bottles || 0),
-    0
-  )
-  const totalCustomerReceived = customerEntries.reduce(
-    (sum, item) => sum + (item.bottles || 0),
-    0
-  )
-
   return (
     <div className="space-y-6">
       {/* Entry Addition Form */}
@@ -121,6 +171,11 @@ export default function TwoWayLedger({
             <Plus className="w-4 h-4 text-hydro" />
             {userRole === 'admin' ? 'Log Bottle Delivery (Admin Dispatch)' : 'Log Received Bottles (Customer Entry)'}
           </h3>
+          <p className="text-xs text-gray-500 mb-3">
+            {hasValidOrderLimit
+              ? `${remainingBottles} of ${orderBottleLimit} bottles remaining in this ledger.`
+              : 'Bottle limit is unavailable for this order.'}
+          </p>
 
           <form
             onSubmit={userRole === 'admin' ? handleAdminAddEntry : handleCustomerAddEntry}
@@ -136,7 +191,7 @@ export default function TwoWayLedger({
                   type="button"
                   aria-label="Decrease bottle count"
                   onClick={() => adjustBottlesCount(-1)}
-                  disabled={bottlesCount !== '' && Number(bottlesCount) <= 1}
+                  disabled={remainingBottles < 1 || (bottlesCount !== '' && Number(bottlesCount) <= 1)}
                   className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <Minus className="w-4 h-4" />
@@ -145,9 +200,10 @@ export default function TwoWayLedger({
                   id="bottles-count"
                   type="number"
                   min="1"
-                  max="50"
+                  max={remainingBottles}
                   step="1"
                   value={bottlesCount}
+                  disabled={remainingBottles < 1}
                   onChange={(e) => {
                     setBottlesCount(e.target.value)
                     setEntryError('')
@@ -161,7 +217,7 @@ export default function TwoWayLedger({
                   type="button"
                   aria-label="Increase bottle count"
                   onClick={() => adjustBottlesCount(1)}
-                  disabled={bottlesCount !== '' && Number(bottlesCount) >= 50}
+                  disabled={remainingBottles < 1 || (bottlesCount !== '' && Number(bottlesCount) >= remainingBottles)}
                   className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <Plus className="w-4 h-4" />
@@ -179,7 +235,7 @@ export default function TwoWayLedger({
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || remainingBottles < 1}
               className="px-5 py-2 bg-gradient-to-r from-hydro to-drops text-white font-bold text-xs rounded-xl shadow hover:opacity-90 transition flex items-center justify-center gap-1.5"
             >
               <CheckCircle2 className="w-4 h-4" />
