@@ -110,15 +110,10 @@ export default async function LandingPage() {
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href={user ? '/orders/new' : '/signup'}
-              className="w-full sm:w-auto px-8 py-3.5 text-base font-bold text-white bg-gradient-to-r from-hydro to-drops rounded-2xl shadow-lg hover:shadow-xl hover:opacity-90 transition flex items-center justify-center gap-2"
-            >
-              Order Water Now <ArrowRight className="w-5 h-5" />
-            </Link>
+            
             <a
               href="#deals"
-              className="w-full sm:w-auto px-8 py-3.5 text-base font-bold text-gray-700 bg-white border border-gray-200 rounded-2xl hover:bg-gray-50 transition shadow-sm"
+              className="w-full sm:w-auto px-8 py-3.5 text-base font-bold text-white bg-gradient-to-r from-hydro to-drops rounded-2xl shadow-lg hover:shadow-xl hover:opacity-90 transition flex items-center justify-center gap-2"
             >
               View Special Deals
             </a>
